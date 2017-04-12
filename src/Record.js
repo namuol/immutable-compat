@@ -172,6 +172,7 @@ Record.getDescriptiveName = recordName;
 const RecordPrototype = Record.prototype;
 RecordPrototype[IS_RECORD_SENTINEL] = true;
 RecordPrototype[DELETE] = RecordPrototype.remove;
+RecordPrototype.deleteIn = (RecordPrototype.removeIn = MapPrototype.deleteIn);
 RecordPrototype.getIn = CollectionPrototype.getIn;
 RecordPrototype.hasIn = CollectionPrototype.hasIn;
 RecordPrototype.merge = MapPrototype.merge;
@@ -187,7 +188,7 @@ RecordPrototype.withMutations = MapPrototype.withMutations;
 RecordPrototype.asMutable = MapPrototype.asMutable;
 RecordPrototype.asImmutable = MapPrototype.asImmutable;
 RecordPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
-RecordPrototype.toJSON = (RecordPrototype.toObject = CollectionPrototype.toObject);
+RecordPrototype.toJSON = RecordPrototype.toJS;//(RecordPrototype.toObject = CollectionPrototype.toObject);
 RecordPrototype.inspect = (RecordPrototype.toSource = CollectionPrototype.toSource);
 
 function makeRecord(likeRecord, values, ownerID) {
