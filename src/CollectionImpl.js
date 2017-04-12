@@ -394,7 +394,7 @@ mixin(Collection, {
     let i = 0;
     while (i !== keyPath.length) {
       if (!nested || !nested.get) {
-        return null;
+        return notSetValue;
       }
       nested = nested.get(keyPath[i++], NOT_SET);
       if (nested === NOT_SET) {
