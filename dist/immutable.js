@@ -4386,7 +4386,7 @@ mixin(Collection, {
   },
 
   toJS: function toJS$1() {
-    return this.toSeq().map(toJS).toJSON();
+    return this.toSeq().map(toJS).toShallowJS();
   },
 
   toKeyedSeq: function toKeyedSeq() {
@@ -4600,7 +4600,7 @@ mixin(Collection, {
     // Entries are plain Array, which do not define toJS, so it must
     // manually converts keys and values before conversion.
     entriesSequence.toJS = function() {
-      return this.map(function (entry) { return [toJS(entry[0]), toJS(entry[1])]; }).toJSON();
+      return this.map(function (entry) { return [toJS(entry[0]), toJS(entry[1])]; }).toShallowJS();
     };
 
     return entriesSequence;
@@ -4666,12 +4666,7 @@ mixin(Collection, {
     var i = 0;
     while (i !== keyPath.length) {
       if (!nested || !nested.get) {
-        throw new TypeError(
-          'Invalid keyPath: Value at [' +
-            keyPath.slice(0, i).map(quoteString) +
-            '] does not have a .get() method: ' +
-            nested
-        );
+        return notSetValue;
       }
       nested = nested.get(keyPath[i++], NOT_SET);
       if (nested === NOT_SET) {
@@ -4815,7 +4810,8 @@ mixin(Collection, {
 var CollectionPrototype = Collection.prototype;
 CollectionPrototype[IS_ITERABLE_SENTINEL] = true;
 CollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.values;
-CollectionPrototype.toJSON = CollectionPrototype.toArray;
+CollectionPrototype.toJSON = CollectionPrototype.toJS;
+CollectionPrototype.toShallowJS = CollectionPrototype.toArray;
 CollectionPrototype.__toStringMapper = quoteString;
 CollectionPrototype.inspect = (CollectionPrototype.toSource = function() {
   return this.toString();
@@ -4855,7 +4851,8 @@ mixin(KeyedCollection, {
 var KeyedCollectionPrototype = KeyedCollection.prototype;
 KeyedCollectionPrototype[IS_KEYED_SENTINEL] = true;
 KeyedCollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
-KeyedCollectionPrototype.toJSON = CollectionPrototype.toObject;
+KeyedCollectionPrototype.toJSON = CollectionPrototype.toJS;
+KeyedCollectionPrototype.toShallowJS = CollectionPrototype.toObject;
 KeyedCollectionPrototype.__toStringMapper = function (v, k) { return quoteString(k) + ': ' + quoteString(v); };
 
 mixin(IndexedCollection, {
@@ -5320,6 +5317,7 @@ Record.getDescriptiveName = recordName;
 var RecordPrototype = Record.prototype;
 RecordPrototype[IS_RECORD_SENTINEL] = true;
 RecordPrototype[DELETE] = RecordPrototype.remove;
+RecordPrototype.deleteIn = (RecordPrototype.removeIn = MapPrototype.deleteIn);
 RecordPrototype.getIn = CollectionPrototype.getIn;
 RecordPrototype.hasIn = CollectionPrototype.hasIn;
 RecordPrototype.merge = MapPrototype.merge;
@@ -5335,7 +5333,8 @@ RecordPrototype.withMutations = MapPrototype.withMutations;
 RecordPrototype.asMutable = MapPrototype.asMutable;
 RecordPrototype.asImmutable = MapPrototype.asImmutable;
 RecordPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
-RecordPrototype.toJSON = (RecordPrototype.toObject = CollectionPrototype.toObject);
+RecordPrototype.toShallowJS = (RecordPrototype.toObject = CollectionPrototype.toObject);
+RecordPrototype.toJSON = RecordPrototype.toJS;
 RecordPrototype.inspect = (RecordPrototype.toSource = CollectionPrototype.toSource);
 
 function makeRecord(likeRecord, values, ownerID) {

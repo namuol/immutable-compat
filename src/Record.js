@@ -188,7 +188,8 @@ RecordPrototype.withMutations = MapPrototype.withMutations;
 RecordPrototype.asMutable = MapPrototype.asMutable;
 RecordPrototype.asImmutable = MapPrototype.asImmutable;
 RecordPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
-RecordPrototype.toJSON = RecordPrototype.toJS;//(RecordPrototype.toObject = CollectionPrototype.toObject);
+RecordPrototype.toShallowJS = (RecordPrototype.toObject = CollectionPrototype.toObject);
+RecordPrototype.toJSON = RecordPrototype.toJS;
 RecordPrototype.inspect = (RecordPrototype.toSource = CollectionPrototype.toSource);
 
 function makeRecord(likeRecord, values, ownerID) {

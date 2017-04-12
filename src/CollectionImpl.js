@@ -117,7 +117,7 @@ mixin(Collection, {
   },
 
   toJS() {
-    return this.toSeq().map(toJS).toJSON();
+    return this.toSeq().map(toJS).toShallowJS();
   },
 
   toKeyedSeq() {
@@ -328,7 +328,7 @@ mixin(Collection, {
     // Entries are plain Array, which do not define toJS, so it must
     // manually converts keys and values before conversion.
     entriesSequence.toJS = function() {
-      return this.map(entry => [toJS(entry[0]), toJS(entry[1])]).toJSON();
+      return this.map(entry => [toJS(entry[0]), toJS(entry[1])]).toShallowJS();
     };
 
     return entriesSequence;
@@ -538,7 +538,8 @@ mixin(Collection, {
 const CollectionPrototype = Collection.prototype;
 CollectionPrototype[IS_ITERABLE_SENTINEL] = true;
 CollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.values;
-CollectionPrototype.toJSON = CollectionPrototype.toArray;
+CollectionPrototype.toJSON = CollectionPrototype.toJS;
+CollectionPrototype.toShallowJS = CollectionPrototype.toArray;
 CollectionPrototype.__toStringMapper = quoteString;
 CollectionPrototype.inspect = (CollectionPrototype.toSource = function() {
   return this.toString();
@@ -574,7 +575,8 @@ mixin(KeyedCollection, {
 const KeyedCollectionPrototype = KeyedCollection.prototype;
 KeyedCollectionPrototype[IS_KEYED_SENTINEL] = true;
 KeyedCollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
-KeyedCollectionPrototype.toJSON = CollectionPrototype.toObject;
+KeyedCollectionPrototype.toJSON = CollectionPrototype.toJS;
+KeyedCollectionPrototype.toShallowJS = CollectionPrototype.toObject;
 KeyedCollectionPrototype.__toStringMapper = (v, k) =>
   quoteString(k) + ': ' + quoteString(v);
 
