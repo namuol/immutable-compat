@@ -188,6 +188,9 @@ RecordPrototype.withMutations = MapPrototype.withMutations;
 RecordPrototype.asMutable = MapPrototype.asMutable;
 RecordPrototype.asImmutable = MapPrototype.asImmutable;
 RecordPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
+RecordPrototype.reduce = function reduce(...args) {
+  return this.toSeq().reduce(...args);
+};
 RecordPrototype.toShallowJS = (RecordPrototype.toObject = CollectionPrototype.toObject);
 RecordPrototype.toJSON = RecordPrototype.toJS;
 RecordPrototype.inspect = (RecordPrototype.toSource = CollectionPrototype.toSource);

@@ -5333,6 +5333,13 @@ RecordPrototype.withMutations = MapPrototype.withMutations;
 RecordPrototype.asMutable = MapPrototype.asMutable;
 RecordPrototype.asImmutable = MapPrototype.asImmutable;
 RecordPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
+RecordPrototype.reduce = function reduce() {
+  var args = [], len = arguments.length;
+  while ( len-- ) args[ len ] = arguments[ len ];
+
+  return (ref = this.toSeq()).reduce.apply(ref, args);
+  var ref;
+};
 RecordPrototype.toShallowJS = (RecordPrototype.toObject = CollectionPrototype.toObject);
 RecordPrototype.toJSON = RecordPrototype.toJS;
 RecordPrototype.inspect = (RecordPrototype.toSource = CollectionPrototype.toSource);
